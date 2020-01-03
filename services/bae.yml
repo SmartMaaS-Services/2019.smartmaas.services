@@ -1,0 +1,169 @@
+version: "3.5"
+
+services:
+
+    bae_elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
+        environment:
+            - discovery.type=single-node
+        networks:
+            - bae
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: any
+
+    bae_mysql:
+        image: mysql:5
+        volumes:
+            - /opt/bae-mysql:/var/lib/mysql
+        networks:
+            - bae
+        environment:
+            - MYSQL_ROOT_PASSWORD=my-secret-pw
+            - MYSQL_DATABASE=RSS
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: any
+
+    bae_charging:
+        image: fiware/biz-ecosystem-charging-backend:v7.6.0
+        networks:
+            front:
+            mongo:
+            bae:
+                aliases:
+                    - charging.bae.docker
+        secrets:
+            - bae-credentials.json
+        depends_on:
+            - bae_mongo
+            - bae_apis
+            - bae_rss
+        environment:
+            - BAE_CB_PAYPAL_CLIENT_ID=AaCLhqW1DD-saAIPCr1BKh-XI_2JZK22n0PKJ1MxBafA8qYXuBW00npkQaoasdfasdfasdfasdf
+            - BAE_CB_PAYPAL_CLIENT_SECRET=ELuIFJ5AP1agebgRa8gMHUi76-_TXj9_LcL3qMpf_DX9fs_-nmtLcfbDbfasdfaswmj52gjW0
+        volumes:
+            - /opt/charging-bills:/business-ecosystem-charging-backend/src/media/bills
+            - /opt/charging-assets:/business-ecosystem-charging-backend/src/media/assets
+            - /opt/charging-plugins:/business-ecosystem-charging-backend/src/plugins
+            - /opt/charging-inst-plugins:/business-ecosystem-charging-backend/src/wstore/asset_manager/resource_plugins/plugins
+        configs:
+            - source: bae_charging-services-settings
+              target: /business-ecosystem-charging-backend/src/user_settings/services_settings.py
+            - source: bae_charging
+              target: /business-ecosystem-charging-backend/src/user_settings/settings.py
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: any
+
+    bae:
+            #image: dockerhub.ficodes.com/fiware/biz-ecosystem-logic-proxy:2019.smartmaas.services
+        image: fiware/biz-ecosystem-logic-proxy
+        networks:
+            - bae
+            - front
+            - mongo
+        depends_on:
+            - bae_mongo
+            - bae_apis
+            - bae_elasticsearch
+        volumes:
+            - /opt/proxy-static:/business-ecosystem-logic-proxy/static
+        configs:
+            - source: bae_proxy
+              target: /business-ecosystem-logic-proxy/etc/config.js
+        environment:
+            - NODE_ENV=production
+            - COLLECT=True
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: any
+
+    bae_apis:
+        image: fiware/biz-ecosystem-apis:v7.6.0
+        networks:
+            - bae
+        depends_on:
+            - bae_mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=my-secret-pw
+            - MYSQL_HOST=bae_mysql
+            - BAE_SERVICE_HOST=https://market.2019.smartmaas.services
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: any
+
+    bae_rss:
+        image: fiware/biz-ecosystem-rss:v7.6.0
+        networks:
+            - bae
+        depends_on:
+            - bae_mysql
+        environment:
+            - BAE_RSS_DATABASE_URL=jdbc:mysql://bae_mysql:3306/RSS
+            - BAE_RSS_DATABASE_USERNAME=root
+            - BAE_RSS_DATABASE_PASSWORD=my-secret-pw
+            - BAE_RSS_DATABASE_DRIVERCLASSNAME=com.mysql.jdbc.Driver
+            - BAE_RSS_OAUTH_CONFIG_GRANTEDROLE=admin
+            - BAE_RSS_OAUTH_CONFIG_SELLERROLE=seller
+            - BAE_RSS_OAUTH_CONFIG_AGGREGATORROLE=Aggregator
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: any
+
+
+################################################################################
+# Configs
+################################################################################
+
+
+configs:
+
+    bae_proxy:
+        file: ../config/bae-proxy.js
+
+    bae_charging-services-settings:
+        file: ../config/bae-charging-services-settings.py
+
+    bae_charging:
+        file: ../config/bae-charging.py
+
+################################################################################
+# Secrets
+################################################################################
+
+secrets:
+
+    bae-credentials.json:
+        name: bae_credentials_v2
+        file: ../config/bae/credentials.json
+
+################################################################################
+# Networks
+################################################################################
+
+networks:
+
+    front:
+        driver: overlay
+        ipam:
+            config:
+                - subnet: 172.40.0.0/16
+
+    mongo:
+        driver: overlay
+        ipam:
+            config:
+                - subnet: 172.47.0.0/16
+
+    bae:
+        driver: overlay
+        ipam:
+            config:
+                - subnet: 172.50.0.0/16

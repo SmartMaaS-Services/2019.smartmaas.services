@@ -1,0 +1,20 @@
+{
+    "description": "context.2019.smartmaas.services synchronization",
+    "subject": {
+        "entities": [
+            {
+                "idPattern": ".*"
+            }
+        ]
+    },
+    "notification": {
+        "httpCustom": {
+            "url": "https://context.2019.smartmaas.services/v2/op/notify",
+            "headers": {
+                "X-Auth-Method": "Demo"
+            }
+        },
+        "metadata": ["dateCreated", "dateModified"]
+    },
+    "throttling": 5
+}

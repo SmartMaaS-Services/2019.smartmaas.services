@@ -1,0 +1,63 @@
+version: "3.5"
+
+services:
+
+    keyrock_mysql:
+        image: mysql:5.7
+        networks:
+            - keyrock
+        volumes:
+            - /opt/keyrock-mysql:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=idm
+        deploy:
+            restart_policy:
+                condition: any
+
+    keyrock:
+            #image: dockerhub.ficodes.com/fiware/idm:2019.smartmaas.services3
+        image: fiware/idm
+        depends_on:
+            - keyrock_mysql
+        networks:
+            - front
+            - keyrock
+        configs:
+            - source: keyrock3
+              target: /opt/fiware-idm/config.js
+        environment:
+            - SERVER_NAME=accounts.2019.smartmaas.services
+            - DATABASE_HOST=keyrock_mysql
+            - DATABASE_PASS=idm
+            - IDM_DB_HOST=keyrock_mysql
+            - IDM_DB_PASS=idm
+            - SMTP_USER=postmaster@2019.smartmaas.services
+            - SMTP_PASS=9b6c37c9ae0f6b1de9a48014684b2e4e-5645b1f9-95dac8ef
+        deploy:
+            restart_policy:
+                condition: any
+
+
+################################################################################
+# Configs
+################################################################################
+
+configs:
+
+    keyrock3:
+        file: ../config/keyrock.js
+
+
+networks:
+
+    front:
+        driver: overlay
+        ipam:
+            config:
+                - subnet: 172.40.0.0/16
+
+    keyrock:
+        driver: overlay
+        ipam:
+            config:
+                - subnet: 172.42.0.0/16

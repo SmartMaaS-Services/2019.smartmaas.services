@@ -1,0 +1,26 @@
+version: "3.5"
+
+services:
+
+    tokenservice:
+        image: ficodes/token-service:0.2
+        depends_on:
+            - keyrock
+        networks:
+            - front
+        environment:
+            - ACCESS_TOKEN_URL=http://keyrock:3000/oauth2/token
+            - TOKEN_SERVICE_CLIENT_ID=6434387e-c2a7-4ef0-829b-4e8465f4f0e4
+            - TOKEN_SERVICE_CLIENT_SECRET=4dd63b0f-1e3b-4fea-9445-eb4da48fa9c5
+        deploy:
+            restart_policy:
+                condition: any
+
+
+networks:
+
+    front:
+        driver: overlay
+        ipam:
+            config:
+                - subnet: 172.40.0.0/16

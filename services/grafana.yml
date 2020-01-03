@@ -1,0 +1,43 @@
+version: "3.5"
+
+services:
+
+  grafana:
+      image: grafana/grafana 
+      ports:
+         - 3000:3000
+      depends_on:
+         - quantumleapcrate     
+      #environment:
+         #- GF_SERVER_ROOT_URL=http://185.8.10.187
+         #- GF_SECURITY_ADMIN_PASSWORD=secret   
+      networks:
+         front:
+            aliases:
+               - grafana.docker
+         grafana:
+         quantumleap:        
+      deploy:
+         restart_policy:
+               condition: any
+
+networks:
+
+    front:
+        driver: overlay
+        ipam:
+            config:
+                - subnet: 172.40.0.0/16
+
+    grafana:
+        driver: overlay
+        ipam:
+            config:
+                - subnet: 172.59.0.0/16
+      
+    quantumleap:
+        driver: overlay
+        ipam:
+            config:
+                - subnet: 172.45.0.0/16
+
