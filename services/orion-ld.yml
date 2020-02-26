@@ -1,0 +1,72 @@
+version: "3.5"
+
+services:
+        orion-ld:
+          image: fiware/orion-ld
+          hostname: orion-ld
+          #healthcheck:
+          #        test: ["CMD", "curl", "-f", "http://46.17.108.74:1028/version"]
+          #        interval: 1m
+          #        timeout: 10s
+          #        retries: 3
+          depends_on:
+                  - mongo-ld
+          ports:
+                  - target: 1026
+                    published: 1028
+                    protocol: tcp
+                    mode: host          
+          command: -dbhost mongo-ld -logLevel DEBUG
+          networks:
+                  front:
+                        aliases:
+                                - orion-ld.docker
+          deploy:
+                  replicas: 1
+                  placement:
+                        constraints:
+                                - node.hostname == chandra-orionld-test
+                  restart_policy:
+                        condition: any
+
+        mongo-ld:
+          image: mongo:3.6
+          hostname: mongo-ld
+          ports:
+                  - target: 27017
+                    protocol: tcp
+                    mode: host          
+          command: --nojournal
+          volumes:
+                  - /opt/mongo-data-fresh:/data/db
+          networks:
+                  front:
+                        aliases:
+                                - mongo-ld.docker
+          deploy:
+                  replicas: 1
+                  placement:
+                        constraints:
+                                - node.hostname == chandra-orionld-test
+                  restart_policy:
+                        condition: any          
+
+networks:
+
+    front:
+        driver: overlay
+        ipam:
+            config:
+                - subnet: 172.40.0.0/16
+
+    orion-ld:
+        driver: overlay
+        ipam:
+            config:
+                - subnet: 172.62.0.0/16
+
+    mongo-ld:
+        driver: overlay
+        ipam:
+            config:
+                - subnet: 172.63.0.0/16                        

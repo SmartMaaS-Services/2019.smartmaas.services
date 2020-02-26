@@ -15,8 +15,14 @@ services:
         volumes:
             - /opt/mongo-data:/data/db
         deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == 2019-manager
             restart_policy:
                 condition: any
+        ulimits:
+            memlock: -1
 
 networks:
 

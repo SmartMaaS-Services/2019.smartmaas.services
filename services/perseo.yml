@@ -19,6 +19,13 @@ services:
     environment:
       - MAX_AGE=630720000000
     command: -perseo_fe_url perseo-fe.docker:9090
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == 2019-manager
+      restart_policy:
+        condition: any
 
   perseo-fe:
     image: telefonicaiot/perseo-fe
@@ -43,6 +50,13 @@ services:
       - PERSEO_SMTP_SECURE=true
       - PERSEO_SMTP_AUTH_USER=postmaster@2019.smartmaas.services
       - PERSEO_SMTP_AUTH_PASS=9b6c37c9ae0f6b1de9a48014684b2e4e-5645b1f9-95dac8ef
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == 2019-manager
+      restart_policy:
+        condition: any
 
 networks:
 

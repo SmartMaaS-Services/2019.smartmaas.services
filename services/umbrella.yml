@@ -16,6 +16,9 @@ services:
                     - elasticsearch.docker
         deploy:
             replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == 2019-manager
             restart_policy:
                 condition: any
 
@@ -38,13 +41,20 @@ services:
                   - market.2019.smartmaas.services
             mongo:
         configs:
-            - source: umbrella
+            - source: umbrella10
               target: /etc/api-umbrella/api-umbrella.yml
+            - source: umbrella11
+              target: /opt/api-umbrella/embedded/openresty/nginx/conf/nginx.conf
         secrets:
             - umbrella.crt
             - umbrella.key
+        ulimits:
+                memlock: -1
         deploy:
             replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == 2019-manager
             restart_policy:
                 condition: any
 
@@ -55,8 +65,10 @@ services:
 
 configs:
 
-    umbrella:
+    umbrella10:
         file: ../config/api-umbrella.yml
+    umbrella11:
+        file: ../config/api-umbrella-nginx.conf
 
 
 ################################################################################

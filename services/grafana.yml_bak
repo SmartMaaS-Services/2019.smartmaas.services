@@ -12,7 +12,6 @@ services:
          #- GF_SERVER_ROOT_URL=http://185.8.10.187
          #- GF_SECURITY_ADMIN_PASSWORD=secret   
       environment:
-         - GF_SERVER_ROOT_URL=https://charts.2019.smartmaas.services     
          - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-worldmap-panel,ryantxu-ajax-panel,scadavis-synoptic-panel,snuids-trafficlights-panel,flant-statusmap-panel,corpglory-progresslist-panel,neocat-cal-heatmap-panel,briangann-gauge-panel,btplc-status-dot-panel,btplc-alarm-box-panel,michaeldmoore-annunciator-panel,vonage-status-panel,pierosavi-imageit-panel,michaeldmoore-multistat-panel,farski-blendstat-panel,grafana-piechart-panel,yesoreyeram-boomtable-panel
       volumes:
          - /opt/grafana:/var/lib/grafana

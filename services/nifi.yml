@@ -13,11 +13,15 @@ services:
             zookeeper:
         deploy:
             replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == 2019
             restart_policy:
                 condition: any
 
   nifi:
         image: apache/nifi:1.10.0
+        #image: sumedhlazy/nifi:latest
         ports:
           - target: 8080
             published: 8080
@@ -35,8 +39,21 @@ services:
                 aliases:
                   - nifi.docker
             nifi:
+        #volumes:
+          # The version in target should be equal to version of image...version in volumes is imp or the service won't start
+          #- /opt/nifi/nifi-current/templates:/opt/nifi/nifi-current/conf/templates
+          #- /opt/nifi/nifi-current/logs:/opt/nifi/nifi-current/logs
+          #- /opt/nifi/nifi-current/conf:/opt/nifi/nifi-current/conf
+          #- /opt/nifi/nifi-current/database_repository:/opt/nifi/nifi-current/database_repository
+          #- /opt/nifi/nifi-current/flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
+          #- /opt/nifi/nifi-current/content_repository:/opt/nifi/nifi-current/content_repository
+          #- /opt/nifi/nifi-current/provenance_repository:/opt/nifi/nifi-current/provenance_repository
+          #- /opt/nifi/nifi-current/state:/opt/nifi/nifi-current/state
         deploy:
             replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == 2019
             restart_policy:
                 condition: any
 

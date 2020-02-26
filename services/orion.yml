@@ -4,6 +4,7 @@ services:
 
     orion:
         # Always use a stable version
+        #image: fiware/orion:2.3.0
         image: fiware/orion:2.0.0
         depends_on:
             - mongo
@@ -22,6 +23,10 @@ services:
             mongo:
         command: -dbhost mongo -corsOrigin __ALL
         deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == 2019-manager
             restart_policy:
                 condition: any
 

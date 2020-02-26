@@ -17,6 +17,9 @@ services:
             - OVERRIDE_HOSTNAME=mail.2019.smartmaas.services
         deploy:
             replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == 2019-manager
             restart_policy:
                 condition: any
 

@@ -10,13 +10,16 @@ services:
             - bae
         deploy:
             replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == 2019-manager
             restart_policy:
                 condition: any
 
     bae_mysql:
         image: mysql:5
         volumes:
-            - /opt/bae-mysql:/var/lib/mysql
+            - /opt/bae-mysql-new:/var/lib/mysql
         networks:
             - bae
         environment:
@@ -24,6 +27,9 @@ services:
             - MYSQL_DATABASE=RSS
         deploy:
             replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == 2019-manager
             restart_policy:
                 condition: any
 
@@ -38,17 +44,17 @@ services:
         secrets:
             - bae-credentials.json
         depends_on:
-            - bae_mongo
+            - mongo
             - bae_apis
             - bae_rss
         environment:
             - BAE_CB_PAYPAL_CLIENT_ID=AaCLhqW1DD-saAIPCr1BKh-XI_2JZK22n0PKJ1MxBafA8qYXuBW00npkQaoasdfasdfasdfasdf
             - BAE_CB_PAYPAL_CLIENT_SECRET=ELuIFJ5AP1agebgRa8gMHUi76-_TXj9_LcL3qMpf_DX9fs_-nmtLcfbDbfasdfaswmj52gjW0
         volumes:
-            - /opt/charging-bills:/business-ecosystem-charging-backend/src/media/bills
-            - /opt/charging-assets:/business-ecosystem-charging-backend/src/media/assets
-            - /opt/charging-plugins:/business-ecosystem-charging-backend/src/plugins
-            - /opt/charging-inst-plugins:/business-ecosystem-charging-backend/src/wstore/asset_manager/resource_plugins/plugins
+            - /opt/charging-bills-new:/business-ecosystem-charging-backend/src/media/bills
+            - /opt/charging-assets-new:/business-ecosystem-charging-backend/src/media/assets
+            - /opt/charging-plugins-new:/business-ecosystem-charging-backend/src/plugins
+            - /opt/charging-inst-plugins-new:/business-ecosystem-charging-backend/src/wstore/asset_manager/resource_plugins/plugins
         configs:
             - source: bae_charging-services-settings
               target: /business-ecosystem-charging-backend/src/user_settings/services_settings.py
@@ -56,22 +62,25 @@ services:
               target: /business-ecosystem-charging-backend/src/user_settings/settings.py
         deploy:
             replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == 2019-manager
             restart_policy:
                 condition: any
 
     bae:
-            #image: dockerhub.ficodes.com/fiware/biz-ecosystem-logic-proxy:2019.smartmaas.services
+        #image: dockerhub.ficodes.com/fiware/biz-ecosystem-logic-proxy:2019.smartmaas.services
         image: fiware/biz-ecosystem-logic-proxy
         networks:
             - bae
             - front
             - mongo
         depends_on:
-            - bae_mongo
+            - mongo
             - bae_apis
             - bae_elasticsearch
         volumes:
-            - /opt/proxy-static:/business-ecosystem-logic-proxy/static
+            - /opt/proxy-static-new:/business-ecosystem-logic-proxy/static
         configs:
             - source: bae_proxy
               target: /business-ecosystem-logic-proxy/etc/config.js
@@ -80,6 +89,9 @@ services:
             - COLLECT=True
         deploy:
             replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == 2019-manager
             restart_policy:
                 condition: any
 
@@ -95,6 +107,9 @@ services:
             - BAE_SERVICE_HOST=https://market.2019.smartmaas.services
         deploy:
             replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == 2019-manager
             restart_policy:
                 condition: any
 
@@ -114,6 +129,9 @@ services:
             - BAE_RSS_OAUTH_CONFIG_AGGREGATORROLE=Aggregator
         deploy:
             replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == 2019-manager
             restart_policy:
                 condition: any
 

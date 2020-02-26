@@ -15,6 +15,10 @@ services:
             - mongo
             - umbrella
         deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == 2019-manager
             restart_policy:
                 condition: any
 
