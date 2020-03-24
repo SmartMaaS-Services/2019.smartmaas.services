@@ -24,7 +24,8 @@ services:
 
     umbrella:
         #image: apinf/api-umbrella:0.15.0-apinf2.1
-        image: challagonda/smartmaas
+        #image: challagonda/smartmaasa
+        image: profirator/api-umbrella:pre-0.15.3
         depends_on:
             - mongo
             - umbrella_elasticsearch
@@ -40,6 +41,8 @@ services:
                   - umbrella.2019.smartmaas.services
                   - market.2019.smartmaas.services
             mongo:
+        environment:
+            - MAXMIND_LICENSE_KEY=CInU1dFAYh8alsUD
         configs:
             - source: umbrella10
               target: /etc/api-umbrella/api-umbrella.yml
@@ -78,10 +81,10 @@ configs:
 secrets:
 
     umbrella.crt:
-        name: umbrella.crt-v6
+        name: umbrella.crt-v7
         file: /etc/letsencrypt/live/2019.smartmaas.services/fullchain.pem
     umbrella.key:
-        name: umbrella.key-v6
+        name: umbrella.key-v7
         file: /etc/letsencrypt/live/2019.smartmaas.services/privkey.pem
 
 

@@ -2,7 +2,7 @@ version: "3.5"
 
 services:
         orion-ld:
-          image: fiware/orion-ld
+          image: fiware/orion-ld:0.2.0
           hostname: orion-ld
           #healthcheck:
           #        test: ["CMD", "curl", "-f", "http://46.17.108.74:1028/version"]
@@ -22,7 +22,9 @@ services:
                         aliases:
                                 - orion-ld.docker
           deploy:
-                  replicas: 1
+                  #update_config:
+                  #      order: stop-first
+                  replicas: 2
                   placement:
                         constraints:
                                 - node.hostname == chandra-orionld-test
