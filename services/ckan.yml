@@ -36,8 +36,8 @@ services:
             - CKAN_OAUTH2_AUTHORIZATION_ENDPOINT=https://accounts.2019.smartmaas.services/oauth2/authorize
             - CKAN_OAUTH2_TOKEN_ENDPOINT=https://accounts.2019.smartmaas.services/oauth2/token
             - CKAN_OAUTH2_PROFILE_API_URL=https://accounts.2019.smartmaas.services/user
-            - CKAN_OAUTH2_CLIENT_ID=c1c013e5-91e1-4c72-98b4-af0c780a624e
-            - CKAN_OAUTH2_CLIENT_SECRET=cbe85368-336e-413d-87a0-67eddc64b7d4
+            - CKAN_OAUTH2_CLIENT_ID=### REPLACE WITH CLIENT ID OF KEYROCK ###
+            - CKAN_OAUTH2_CLIENT_SECRET=### REPLACE WITH CLIENT SECRET OF KEYROCK ###
             - CKAN_OAUTH2_SCOPE=all_info
             - CKAN_OAUTH2_JWT_ENABLE=False
             - CKAN_OAUTH2_REMEMBERER_NAME=auth_tkt
