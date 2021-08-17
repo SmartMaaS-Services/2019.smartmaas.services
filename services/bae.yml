@@ -48,8 +48,8 @@ services:
             - bae_apis
             - bae_rss
         environment:
-            - BAE_CB_PAYPAL_CLIENT_ID=AaCLhqW1DD-saAIPCr1BKh-XI_2JZK22n0PKJ1MxBafA8qYXuBW00npkQaoasdfasdfasdfasdf
-            - BAE_CB_PAYPAL_CLIENT_SECRET=ELuIFJ5AP1agebgRa8gMHUi76-_TXj9_LcL3qMpf_DX9fs_-nmtLcfbDbfasdfaswmj52gjW0
+            - BAE_CB_PAYPAL_CLIENT_ID=###REPLACE WITH PAYPAL CLIENT ID###
+            - BAE_CB_PAYPAL_CLIENT_SECRET=###REPLACE WITH PAYPAL CLIENT SECRET###
         volumes:
             - /opt/charging-bills-new:/business-ecosystem-charging-backend/src/media/bills
             - /opt/charging-assets-new:/business-ecosystem-charging-backend/src/media/assets
