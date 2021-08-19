@@ -31,8 +31,8 @@ config.theme = '';
 // OAuth2 configuration
 config.oauth2 = {
     'server': 'https://accounts.2019.smartmaas.services/',
-    'clientID': 'f7debdfb-1d0b-41c9-8a64-446556b3ee7a',
-    'clientSecret': '13c9a9be-c475-4577-b05c-b2182fa70656',
+    'clientID': '### REPLACE WITH CLIENT ID OF KEYROCK ###',
+    'clientSecret': '### REPLACE WITH CLIENT SECRET OF KEYROCK ###',
     'callbackURL': 'https://market.2019.smartmaas.services/auth/fiware/callback',
     'isLegacy': false,
     'roles': {
